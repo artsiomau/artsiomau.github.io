@@ -9,7 +9,10 @@ const dist = path.join(__dirname, 'dist');
 const src = path.join(__dirname, 'src');
 const host = 'localhost';
 
+const repoName = 'artsiomau';
+
 module.exports = (_, args) => {
+  const isDev = args.mode === 'development';
   return {
     devtool: 'source-map',
     context: src,
@@ -31,10 +34,11 @@ module.exports = (_, args) => {
     entry: './index.tsx',
     output: {
       path: dist,
-      publicPath:
-        args.mode === 'development' ? `http://${host}:${port}/` : undefined /* <- прописать данные своего github */,
-      filename: `js/[name].js`,
-      chunkFilename: `js/[name].js`,
+      publicPath: args.mode === 'development'
+        ? `http://${host}:${port}/`
+        : '/',
+      filename: 'js/[name].js',
+      chunkFilename: 'js/[name].js',
     },
     module: {
       rules: [
@@ -45,22 +49,11 @@ module.exports = (_, args) => {
         },
         {
           test: /\.less$/,
-          use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
-            },
-            'css-loader',
-            'less-loader',
-          ],
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
         },
         {
           test: /\.css$/,
-          use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
-            },
-            'css-loader',
-          ],
+          use: [MiniCssExtractPlugin.loader, 'css-loader'],
         },
         {
           test: /\.svg/,
@@ -69,9 +62,7 @@ module.exports = (_, args) => {
         {
           test: /\.s[ac]ss$/i,
           use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
-            },
+            MiniCssExtractPlugin.loader,
             {
               loader: 'css-loader',
               options: {
